@@ -35,12 +35,12 @@
   /* Header */
   .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
   /* "Lease via Fietslease Holland"-badge */
-  .via { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 99px; padding: 4px 12px 4px 4px; background: #fff; }
+  .via { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 99px; padding: 6px 14px; background: #fff; }
+  .via .flh-logo { height: 28px; width: auto; display: block; }
   .via b { color: var(--ink); font-weight: 700; }
-  .via-dot { width: 22px; height: 22px; border-radius: 50%; background: #282a2b; color: var(--flh); display: grid; place-items: center; font-size: 8px; font-weight: 800; letter-spacing: -.02em; }
   .via:hover { border-color: #c9cdcf; }
   .partner { display: flex; gap: 10px; align-items: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); line-height: 1.4; }
-  .partner .via-dot { width: 30px; height: 30px; font-size: 9px; flex: none; }
+  .partner .flh-logo { height: 30px; width: auto; flex: none; }
   .partner a { color: var(--ink); font-weight: 700; text-decoration: none; }
   .partner a:hover { text-decoration: underline; }
   .steps { display: flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
@@ -131,6 +131,8 @@
   .btn:active { transform: translateY(1px); }
   .btn[disabled] { opacity: .6; cursor: progress; }
   .btn-ghost { background: none; color: var(--muted); font-weight: 700; padding: 10px; width: auto; }
+  .btn-outline { background: #fff; color: var(--ink); border: 1.5px solid var(--line); margin-top: 18px; }
+  .btn-outline:hover { background: var(--card); border-color: #c9cdcf; }
   .btn-ghost:hover { background: none; color: var(--ink); }
 
   /* Form */
@@ -222,7 +224,7 @@
 <body>
 <div class="wrap">
   <div class="top">
-    <a class="via" href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener"><span class="via-dot">FLH</span><span>Lease via <b>Fietslease Holland</b></span></a>
+    <a class="via" href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener"><span>Lease via</span><img class="flh-logo" src="img/logo-fietslease-holland.png" alt="Fietslease Holland" width="332" height="120"></a>
     <div class="steps" id="steps" aria-label="Voortgang">
       <span data-s="1" class="on"><b>1</b>Configureer</span><i></i>
       <span data-s="2"><b>2</b>Gegevens</span>
@@ -282,7 +284,7 @@
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--green)"><path d="M5 12l5 5L20 7"/></svg>24/7 pechhulp in heel Europa</li>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--green)"><path d="M5 12l5 5L20 7"/></svg>Aanvragen is vrijblijvend</li>
         </ul>
-        <div class="partner"><span class="via-dot">FLH</span><span>Deze lease wordt aangeboden en afgehandeld door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a>, in samenwerking met deze VanMoof-dealer.</span></div>
+        <div class="partner"><img class="flh-logo" src="img/logo-fietslease-holland.png" alt="Fietslease Holland" width="332" height="120"><span>Deze lease wordt aangeboden en afgehandeld door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a>, in samenwerking met deze VanMoof-dealer.</span></div>
       </aside>
     </div>
 
@@ -361,7 +363,7 @@
         <div class="price" id="price2">€ 0<span> /maand</span></div>
         <ul id="summaryList2"></ul>
         <button class="btn btn-ghost" type="button" data-go="1" style="padding:0">Wijzigen</button>
-        <div class="partner"><span class="via-dot">FLH</span><span>Deze lease wordt aangeboden en afgehandeld door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a>, in samenwerking met deze VanMoof-dealer.</span></div>
+        <div class="partner"><img class="flh-logo" src="img/logo-fietslease-holland.png" alt="Fietslease Holland" width="332" height="120"><span>Deze lease wordt aangeboden en afgehandeld door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a>, in samenwerking met deze VanMoof-dealer.</span></div>
       </aside>
     </div>
   </section>
@@ -384,6 +386,7 @@
           <li><b>Je VanMoof ophalen</b><span>Deze winkel maakt je fiets rijklaar en levert hem aan je uit.</span></li>
         </ol>
         <div class="note">Vragen over je aanvraag? Mail Fietslease Holland via <a href="mailto:info@fietsleaseholland.nl">info@fietsleaseholland.nl</a>.</div>
+        <button class="btn btn-outline" type="button" id="restartBtn">← Terug naar het begin</button>
       </div>
 
       <aside class="summary">
@@ -391,7 +394,7 @@
         <div class="label">Jouw aanvraag</div>
         <div class="price" id="price3">€ 0<span> /maand</span></div>
         <ul id="summaryList3"></ul>
-        <div class="partner"><span class="via-dot">FLH</span><span>Deze lease wordt aangeboden en afgehandeld door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a>, in samenwerking met deze VanMoof-dealer.</span></div>
+        <div class="partner"><img class="flh-logo" src="img/logo-fietslease-holland.png" alt="Fietslease Holland" width="332" height="120"><span>Deze lease wordt aangeboden en afgehandeld door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a>, in samenwerking met deze VanMoof-dealer.</span></div>
       </aside>
     </div>
   </section>
@@ -458,7 +461,7 @@ const photoFor = (model, color, carrier) => `img/${MODEL_SLUG[model]}-${COLOR_SL
 
 /* ---- State ----------------------------------------------------------- */
 const params = new URLSearchParams(location.search);
-const state = {
+const initialConfig = () => ({
   model: MODELS.some(m => m.id === params.get("model")) ? params.get("model") : MODELS[0].id,
   color: COLORS[0].id,
   rear: "none",
@@ -466,6 +469,9 @@ const state = {
   carrier: "Nee",
   term: 48,
   leaseType: "Privé",
+});
+const state = {
+  ...initialConfig(),
   dealerid: params.get("dealerid") || document.documentElement.dataset.dealerid || "",
 };
 // Dealer kan accentkleur meegeven: ?accent=e30613 (hex zonder #)
@@ -551,6 +557,17 @@ function go(step) {
   postHeight();
 }
 document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(+b.dataset.go)));
+
+// Na het versturen opnieuw beginnen (handig in de winkel: volgende klant begint met een leeg formulier)
+$("#restartBtn").addEventListener("click", () => {
+  Object.assign(state, initialConfig());
+  $("#form").reset();
+  document.querySelectorAll("#form .invalid, #privacyWrap.invalid").forEach(el => el.classList.remove("invalid"));
+  $("#addrStatus").textContent = ""; $("#addrStatus").className = "addr-status";
+  $("#formError").style.display = "none";
+  renderAll();
+  go(1);
+});
 
 /* ---- Validatie & verzenden ------------------------------------------ */
 // IBAN mod-97 controle
