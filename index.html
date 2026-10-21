@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VanMoof leasen</title>
+<meta name="description" content="Full service lease voor VanMoof e-bikes bij Fietslease Holland.">
+<style>
+  /* Neutrale basis met FLH-groen als accent, zodat het op elke dealersite past */
+  :root {
+    --green: #669933;
+    --green-dark: color-mix(in srgb, var(--green) 80%, black);
+    --green-soft: color-mix(in srgb, var(--green) 10%, white);
+    --flh: #669933;
+    --ink: #1d1f20;
+    --muted: #6b7174;
+    --line: #e6e8e9;
+    --bg: #ffffff;
+    --card: #f6f7f7;
+    --error: #c0392b;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 24px 16px 40px; }
+
+  /* Header */
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+  /* "Lease via Fietslease Holland"-badge */
+  .via { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 99px; padding: 4px 12px 4px 4px; background: #fff; }
+  .via b { color: var(--ink); font-weight: 700; }
+  .via-dot { width: 22px; height: 22px; border-radius: 50%; background: #282a2b; color: var(--flh); display: grid; place-items: center; font-size: 8px; font-weight: 800; letter-spacing: -.02em; }
+  .via:hover { border-color: #c9cdcf; }
+  .partner { display: flex; gap: 10px; align-items: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .partner .via-dot { width: 30px; height: 30px; font-size: 9px; flex: none; }
+  .partner a { color: var(--ink); font-weight: 700; text-decoration: none; }
+  .partner a:hover { text-decoration: underline; }
+  .steps { display: flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
+  .steps span { display: flex; align-items: center; gap: 6px; }
+  .steps b { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; font-size: 12px; }
+  .steps .on { color: var(--ink); font-weight: 700; }
+  .steps .on b { background: var(--green); border-color: var(--green); color: #fff; }
+  .steps .done b { background: var(--green-soft); border-color: var(--green-soft); color: var(--green-dark); }
+  .steps i { width: 18px; height: 1.5px; background: var(--line); }
+
+  h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.15; margin: 0 0 6px; letter-spacing: -.02em; }
+  .lead { color: var(--muted); margin: 0 0 24px; }
+
+  /* Layout */
+  .grid { display: grid; grid-template-columns: 1fr 340px; gap: 28px; align-items: start; }
+  .grid > * { min-width: 0; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+  @media (max-width: 480px) { .tile .t-thumb { display: none; } }
+
+  /* Hero */
+  .hero { background: var(--card); border-radius: 20px; position: relative; overflow: hidden; aspect-ratio: 16 / 10; display: grid; place-items: center; }
+  .hero img { width: 92%; height: auto; mix-blend-mode: multiply; transition: opacity .25s ease, transform .35s ease; }
+  .hero img.swap { opacity: 0; transform: translateX(12px); }
+  .hero .tag { position: absolute; left: 16px; top: 14px; background: #fff; border-radius: 99px; padding: 5px 12px; font-size: 12px; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .hero .swatch-tag { position: absolute; right: 16px; top: 14px; display: flex; align-items: center; gap: 7px; background: #fff; border-radius: 99px; padding: 5px 12px 5px 6px; font-size: 12px; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .hero .swatch-tag i { width: 16px; height: 16px; border-radius: 50%; display: block; }
+
+  .section { margin-top: 26px; }
+  .section h2 { font-size: 15px; margin: 0 0 10px; font-weight: 800; display: flex; justify-content: space-between; align-items: baseline; }
+  .section h2 small { font-weight: 500; color: var(--muted); font-size: 13px; }
+
+  /* Option tiles */
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .tile { position: relative; border: 1.5px solid var(--line); border-radius: var(--radius); padding: 12px 14px; cursor: pointer; background: #fff; transition: border-color .15s, box-shadow .15s, background .15s; display: flex; align-items: center; gap: 12px; text-align: left; font: inherit; color: inherit; width: 100%; }
+  .tile:hover { border-color: #c9cdcf; }
+  .tile[aria-checked="true"] { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+  .tile .t-main { flex: 1; min-width: 0; }
+  .tile .t-title { font-weight: 700; display: block; }
+  .tile .t-sub { color: var(--muted); font-size: 13px; display: block; }
+  .tile .t-thumb { width: 70px; flex: none; mix-blend-mode: multiply; }
+  .tile .t-price { font-size: 12px; font-weight: 700; color: var(--green-dark); white-space: nowrap; }
+
+  /* Color swatches */
+  /* Kleurblokken: swatch verschijnt bij selectie (en bij hover) */
+  .tiles.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  @media (max-width: 560px) { .tiles.three { grid-template-columns: 1fr; gap: 8px; } .color-tile { min-height: 46px; padding: 10px 14px; } }
+  .color-tile { gap: 0; min-height: 54px; }
+  .color-tile .dot { width: 0; height: 26px; border-radius: 50%; flex: none; opacity: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); transition: width .2s ease, margin .2s ease, opacity .2s ease; }
+  .color-tile:hover .dot { width: 18px; height: 18px; margin-right: 10px; opacity: .6; }
+  .color-tile[aria-checked="true"] .dot { width: 26px; height: 26px; margin-right: 12px; opacity: 1; }
+
+  /* Achter- en voordrager */
+  .opt-tiles .tile { flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px; }
+  .opt-tiles .t-price.none { color: var(--muted); font-weight: 600; }
+  /* Op smalle schermen: dragers als compacte rijen onder elkaar, prijs rechts */
+  @media (max-width: 560px) {
+    .tiles.three.opt-tiles .tile { flex-direction: row; align-items: center; gap: 10px; min-height: 46px; padding: 10px 14px; }
+    .tiles.three.opt-tiles .t-price { margin-left: auto; }
+    .opt-tiles .t-sub { display: none; }
+    .opt-tiles .t-price { white-space: normal; }
+  }
+  .sub-opts { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1.5px solid var(--line); border-radius: 99px; padding: 7px 14px; background: #fff; cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); transition: all .15s; }
+  .chip[aria-checked="true"] { border-color: var(--green); background: var(--green-soft); color: var(--green-dark); }
+
+  /* Segmented */
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--card); border-radius: 12px; padding: 4px; gap: 4px; }
+  .seg button { border: none; background: none; border-radius: 9px; padding: 10px; font: inherit; font-weight: 700; cursor: pointer; color: var(--muted); display: flex; flex-direction: column; align-items: center; line-height: 1.25; }
+  .seg button small { font-weight: 600; font-size: 12px; }
+  .seg button[aria-checked="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .seg button[aria-checked="true"] small { color: var(--green-dark); }
+
+  /* Summary card */
+  .summary { position: sticky; top: 16px; border: 1.5px solid var(--line); border-radius: 20px; padding: 20px; background: #fff; }
+  .summary .price { font-size: 40px; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin: 6px 0 2px; }
+  .summary .price span { font-size: 15px; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+  .summary .label { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+  .summary ul { list-style: none; padding: 0; margin: 16px 0; border-top: 1px solid var(--line); }
+  .summary li { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .summary li span:first-child { color: var(--muted); }
+  .summary li span:last-child { font-weight: 600; text-align: right; }
+  .summary .usps { list-style: none; padding: 0; margin: 16px 0 0; border: 0; font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
+  .summary .usps li { display: flex; justify-content: flex-start; gap: 8px; align-items: flex-start; padding: 0; border: 0; font-size: 13px; }
+  .usps svg { flex: none; margin-top: 3px; }
+
+  .btn { appearance: none; border: none; width: 100%; background: var(--green); color: #fff; font: inherit; font-weight: 800; font-size: 16px; padding: 15px 18px; border-radius: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background .15s, transform .05s; }
+  .btn:hover { background: var(--green-dark); }
+  .btn:active { transform: translateY(1px); }
+  .btn[disabled] { opacity: .6; cursor: progress; }
+  .btn-ghost { background: none; color: var(--muted); font-weight: 700; padding: 10px; width: auto; }
+  .btn-ghost:hover { background: none; color: var(--ink); }
+
+  /* Form */
+  .form-card { border: 1.5px solid var(--line); border-radius: 20px; padding: 22px; }
+  .row { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+  .row.addr { grid-template-columns: 2fr 1fr 1fr; }
+  @media (max-width: 560px) { .row { grid-template-columns: 1fr 1fr; } .row.addr { grid-template-columns: 1.4fr 1fr 1fr; } }
+  .addr-status { font-size: 13px; color: var(--muted); margin: -4px 0 10px; min-height: 0; }
+  .addr-status:empty { display: none; }
+  .addr-status.ok { color: var(--green-dark); }
+  .field input.filled { background: var(--green-soft); transition: background 1.2s ease; }
+  .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; min-width: 0; }
+  .field label { font-size: 13px; font-weight: 700; }
+  .field label em { font-style: normal; color: var(--muted); font-weight: 500; }
+  .field input, .field textarea, .field select { font: inherit; border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 12px; background: #fff; color: var(--ink); width: 100%; transition: border-color .15s, box-shadow .15s; }
+  .field textarea { min-height: 84px; resize: vertical; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+  .field.invalid input { border-color: var(--error); }
+  .field .err { color: var(--error); font-size: 12px; display: none; }
+  .field.invalid .err { display: block; }
+  .divider { height: 1px; background: var(--line); margin: 10px 0 18px; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; cursor: pointer; }
+  .check input { width: 20px; height: 20px; accent-color: var(--green); margin: 1px 0 0; flex: none; }
+  .check.invalid { color: var(--error); }
+  .note { font-size: 13px; color: var(--muted); background: var(--card); border-radius: 12px; padding: 12px 14px; margin: 16px 0; }
+  a { color: var(--green-dark); }
+  .form-error { color: var(--error); font-size: 14px; margin-top: 10px; display: none; }
+
+  [hidden] { display: none !important; }
+  .step { animation: in .3s ease; }
+  @keyframes in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* Success */
+  .done-head { text-align: center; max-width: 560px; margin: 10px auto 28px; }
+  .done-head p { color: var(--muted); margin: 0; }
+  .done .check-big { width: 72px; height: 72px; border-radius: 50%; background: var(--green-soft); display: grid; place-items: center; margin: 0 auto 18px; animation: pop .45s cubic-bezier(.2, 1.4, .4, 1); }
+  @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+  .done-title { font-size: 17px; margin: 0 0 16px; }
+  .timeline { list-style: none; margin: 0; padding: 0; }
+  .timeline li { position: relative; padding: 0 0 20px 38px; }
+  .timeline li::before { content: ""; position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); background: #fff; box-sizing: border-box; }
+  .timeline li::after { content: ""; position: absolute; left: 10px; top: 24px; bottom: 2px; width: 2px; background: var(--line); }
+  .timeline li:last-child { padding-bottom: 0; }
+  .timeline li:last-child::after { display: none; }
+  .timeline li.is-done::before { background: var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center / 12px no-repeat; border-color: var(--green); }
+  .timeline b { display: block; font-size: 15px; }
+  .timeline span { display: block; color: var(--muted); font-size: 14px; }
+  .done-photo { background: var(--card); border-radius: 14px; margin: -4px -4px 16px; aspect-ratio: 16 / 10; display: grid; place-items: center; }
+  .done-photo img { width: 92%; mix-blend-mode: multiply; }
+
+  /* Mobile sticky bar */
+  .mbar { display: none; }
+  @media (max-width: 860px) {
+    .summary.on-config { position: static; }
+    .mbar { display: flex; position: sticky; bottom: 0; margin: 20px -16px -40px; padding: 12px 16px; background: #fff; border-top: 1px solid var(--line); align-items: center; gap: 14px; z-index: 5; }
+    .mbar .p { font-weight: 800; font-size: 20px; white-space: nowrap; }
+    .mbar .p small { font-size: 12px; color: var(--muted); font-weight: 600; display: block; line-height: 1; }
+    .mbar .btn { flex: 1; padding: 13px; }
+    .summary .btn.cfg-next { display: none; }
+    /* Mini-foto verschijnt zodra de grote foto uit beeld is */
+    .mbar .thumb { width: 0; height: 44px; object-fit: contain; mix-blend-mode: multiply; opacity: 0; margin-right: -14px; transition: width .2s ease, opacity .2s ease, margin .2s ease; }
+    .mbar.show-thumb .thumb { width: 92px; height: 52px; opacity: 1; margin-right: 0; }
+    /* In een iframe scrollt de dealerpagina: de balk wordt dan via berichten van die pagina geplaatst */
+    .embedded.vp .wrap { position: relative; }
+    .embedded.vp .mbar { display: flex; position: absolute; left: 0; right: 0; margin: 0; bottom: auto; box-shadow: 0 -4px 12px rgba(0,0,0,.06); }
+    .embedded.vp .summary .btn.cfg-next { display: none; }
+  }
+  /* In een iframe dat niet zelf scrollt en zonder plaatsingsberichten (oude embedcode):
+     geen balk, knop in de samenvatting. Scrollt het iframe zelf, dan werkt de gewone plakkende balk. */
+  .embedded:not(.vp):not(.selfscroll) .mbar { display: none; }
+  .embedded:not(.vp):not(.selfscroll) .summary .btn.cfg-next { display: flex; }
+  .foot { margin-top: 28px; font-size: 12px; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="via" href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener"><span class="via-dot">FLH</span><span>Lease via <b>Fietslease Holland</b></span></a>
+    <div class="steps" id="steps" aria-label="Voortgang">
+      <span data-s="1" class="on"><b>1</b>Configureer</span><i></i>
+      <span data-s="2"><b>2</b>Gegevens</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: configurator -->
+  <section class="step" id="step1">
+    <h1>Lease je VanMoof</h1>
+    <p class="lead">Stel je fiets samen, zie direct je maandprijs en vraag hem vrijblijvend aan. De lease wordt verzorgd door Fietslease Holland.</p>
+
+    <div class="grid">
+      <div>
+        <div class="hero">
+          <span class="tag" id="heroModel">VanMoof S6</span>
+          <span class="swatch-tag"><i id="heroSwatch"></i><span id="heroColor">Drift Black</span></span>
+          <img id="heroImg" alt="VanMoof S6" src="img/s6-black-none.jpg">
+        </div>
+
+        <div class="section">
+          <h2>Model</h2>
+          <div class="tiles" role="radiogroup" id="models"></div>
+        </div>
+
+        <div class="section">
+          <h2>Kleur</h2>
+          <div class="tiles three" role="radiogroup" id="colors"></div>
+        </div>
+
+        <div class="section">
+          <h2>Achterdrager <small>optioneel</small></h2>
+          <div class="tiles three opt-tiles" role="radiogroup" id="rear"></div>
+        </div>
+
+        <div class="section">
+          <h2>Voordrager <small>optioneel</small></h2>
+          <div class="tiles three opt-tiles" role="radiogroup" id="front"></div>
+        </div>
+
+        <div class="section">
+          <h2>Looptijd</h2>
+          <div class="tiles opt-tiles" role="radiogroup" id="terms"></div>
+        </div>
+      </div>
+
+      <aside class="summary on-config">
+        <div class="label">Jouw leaseprijs</div>
+        <div class="price" id="price">€ 0<span> /maand</span></div>
+        <ul id="summaryList"></ul>
+        <button class="btn cfg-next" type="button" data-go="2">Leaseaanvraag starten
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <ul class="usps">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--green)"><path d="M5 12l5 5L20 7"/></svg>Officieel leasepartner van VanMoof</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--green)"><path d="M5 12l5 5L20 7"/></svg>Verzekerd tegen diefstal en schade</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--green)"><path d="M5 12l5 5L20 7"/></svg>Onderhoud en reparaties inbegrepen</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--green)"><path d="M5 12l5 5L20 7"/></svg>24/7 pechhulp in heel Europa</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--green)"><path d="M5 12l5 5L20 7"/></svg>Aanvragen is vrijblijvend</li>
+        </ul>
+        <div class="partner"><span class="via-dot">FLH</span><span>Deze lease wordt aangeboden en afgehandeld door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a>, in samenwerking met deze VanMoof-dealer.</span></div>
+      </aside>
+    </div>
+
+    <div class="mbar">
+      <img class="thumb" id="mthumb" alt="" src="img/s6-black-none.jpg">
+      <div class="p"><small>per maand</small><span id="mprice">€ 0</span></div>
+      <button class="btn" type="button" data-go="2">Aanvragen</button>
+    </div>
+  </section>
+
+  <!-- STEP 2: details -->
+  <section class="step" id="step2" hidden>
+    <button class="btn btn-ghost" type="button" data-go="1">← Terug naar configuratie</button>
+    <h1>Jouw gegevens</h1>
+    <p class="lead">Nog één stap. Fietslease Holland neemt je aanvraag in behandeling en stuurt je de leaseovereenkomst.</p>
+
+    <div class="grid">
+      <form class="form-card" id="form" novalidate>
+        <div class="field">
+          <label>Wil je privé of zakelijk leasen?</label>
+          <div class="seg" role="radiogroup" id="leaseType"></div>
+        </div>
+
+        <div id="bizFields" hidden>
+          <div class="row">
+            <div class="field"><label for="bedrijfsnaam">Bedrijfsnaam</label><input id="bedrijfsnaam" name="bedrijfsnaam" autocomplete="organization" data-req-biz><span class="err">Vul je bedrijfsnaam in</span></div>
+            <div class="field"><label for="kvk">KvK-nummer</label><input id="kvk" name="kvk" inputmode="numeric" pattern="\d{8}" maxlength="8" data-req-biz><span class="err">Een KvK-nummer heeft 8 cijfers</span></div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="btw">BTW-nummer</label><input id="btw" name="btw" pattern="\s*[Nn][Ll]\s*\d{9}\s*[Bb]\s*\d{2}\s*" placeholder="NL123456789B01" data-req-biz><span class="err">Bijv. NL123456789B01</span></div>
+            <div class="field"><label for="iban">IBAN</label><input id="iban" name="iban" placeholder="NL00 BANK 0123 4567 89" autocomplete="off" data-req-biz><span class="err">Vul een geldig IBAN in</span></div>
+          </div>
+          <div class="field"><label for="tekenbevoegd">Naam tekeningsbevoegd persoon</label><input id="tekenbevoegd" name="tekenbevoegd" autocomplete="name" data-req-biz><span class="err">Vul de naam van de tekeningsbevoegde in</span></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <div class="field"><label for="voorletters">Voorletters</label><input id="voorletters" name="voorletters" autocomplete="given-name" required><span class="err">Vul je voorletters in</span></div>
+          <div class="field"><label for="achternaam">Achternaam</label><input id="achternaam" name="achternaam" autocomplete="family-name" required><span class="err">Vul je achternaam in</span></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="email">E-mailadres</label><input id="email" name="email" type="email" autocomplete="email" required><span class="err">Vul een geldig e-mailadres in</span></div>
+          <div class="field"><label for="telefoon">Telefoonnummer</label><input id="telefoon" name="telefoon" type="tel" autocomplete="tel" required pattern="[\d\s+()\-]{10,}"><span class="err">Vul een geldig telefoonnummer in</span></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row addr">
+          <div class="field"><label for="postcode">Postcode</label><input id="postcode" name="postcode" autocomplete="postal-code" required pattern="\s*\d{4}\s?[A-Za-z]{2}\s*" placeholder="1234 AB"><span class="err">Bijv. 1234 AB</span></div>
+          <div class="field"><label for="huisnummer">Huisnr.</label><input id="huisnummer" name="huisnummer" inputmode="numeric" pattern="\d+" required><span class="err">Alleen cijfers</span></div>
+          <div class="field"><label for="toevoeging">Toev. <em>(opt.)</em></label><input id="toevoeging" name="toevoeging"></div>
+        </div>
+        <div class="addr-status" id="addrStatus" aria-live="polite"></div>
+        <div class="row">
+          <div class="field"><label for="straat">Straat</label><input id="straat" name="straat" autocomplete="address-line1" required><span class="err">Vul je straat in</span></div>
+          <div class="field"><label for="plaats">Plaats</label><input id="plaats" name="plaats" autocomplete="address-level2" required><span class="err">Vul je woonplaats in</span></div>
+        </div>
+
+        <div id="privFields">
+          <div class="field" style="max-width:260px"><label for="geboortedatum">Geboortedatum</label><input id="geboortedatum" name="geboortedatum" type="date" autocomplete="bday" data-req-priv><span class="err">Je moet minimaal 18 jaar zijn</span></div>
+        </div>
+
+        <div class="field"><label for="opmerkingen">Opmerkingen <em>(optioneel)</em></label><textarea id="opmerkingen" name="opmerkingen"></textarea></div>
+
+        <div class="note">Het indienen van een aanvraag is vrijblijvend, je zit nog nergens aan vast. Fietslease Holland neemt je aanvraag in behandeling; bij acceptatie ontvang je van ons de definitieve leaseovereenkomst om te ondertekenen.</div>
+
+        <label class="check" id="privacyWrap"><input type="checkbox" id="privacy" name="privacy"> <span>Ik ga akkoord met de <a href="https://www.fietsleaseholland.nl/privacyverklaring" target="_blank" rel="noopener">privacyverklaring</a> van Fietslease Holland</span></label>
+
+        <div style="margin-top:18px"><button class="btn" type="submit" id="submitBtn">Aanvraag versturen</button></div>
+        <div class="form-error" id="formError">Er ging iets mis bij het versturen. Probeer het opnieuw of mail Fietslease Holland via info@fietsleaseholland.nl.</div>
+      </form>
+
+      <aside class="summary">
+        <div class="label">Jouw VanMoof</div>
+        <div class="price" id="price2">€ 0<span> /maand</span></div>
+        <ul id="summaryList2"></ul>
+        <button class="btn btn-ghost" type="button" data-go="1" style="padding:0">Wijzigen</button>
+        <div class="partner"><span class="via-dot">FLH</span><span>Deze lease wordt aangeboden en afgehandeld door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a>, in samenwerking met deze VanMoof-dealer.</span></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- SUCCESS -->
+  <section class="step done" id="step3" hidden>
+    <div class="done-head">
+      <div class="check-big"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="color:var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div>
+      <h1>Bedankt<span id="doneName"></span>, je aanvraag is binnen!</h1>
+      <p>Fietslease Holland neemt je aanvraag voor de <strong id="doneModel"></strong> in behandeling. We houden je op de hoogte via <strong id="doneEmail"></strong>.</p>
+    </div>
+
+    <div class="grid">
+      <div class="form-card">
+        <h2 class="done-title">Wat gebeurt er nu?</h2>
+        <ol class="timeline">
+          <li class="is-done"><b>Aanvraag ontvangen</b><span>Zojuist verstuurd. Je zit nog nergens aan vast.</span></li>
+          <li><b>Beoordeling door Fietslease Holland</b><span>We bekijken je aanvraag en nemen contact met je op als we nog iets nodig hebben.</span></li>
+          <li><b>Leaseovereenkomst ondertekenen</b><span>Bij akkoord ontvang je de definitieve leaseovereenkomst om digitaal te ondertekenen.</span></li>
+          <li><b>Je VanMoof ophalen</b><span>Deze winkel maakt je fiets rijklaar en levert hem aan je uit.</span></li>
+        </ol>
+        <div class="note">Vragen over je aanvraag? Mail Fietslease Holland via <a href="mailto:info@fietsleaseholland.nl">info@fietsleaseholland.nl</a>.</div>
+      </div>
+
+      <aside class="summary">
+        <div class="done-photo"><img id="donePhoto" alt=""></div>
+        <div class="label">Jouw aanvraag</div>
+        <div class="price" id="price3">€ 0<span> /maand</span></div>
+        <ul id="summaryList3"></ul>
+        <div class="partner"><span class="via-dot">FLH</span><span>Deze lease wordt aangeboden en afgehandeld door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a>, in samenwerking met deze VanMoof-dealer.</span></div>
+      </aside>
+    </div>
+  </section>
+
+  <div class="foot">Lease aangeboden door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a></div>
+</div>
+
+<script>
+/* ---- Configuratie ---------------------------------------------------- */
+// Endpoint dat de aanvraag ontvangt (JSON POST). Leeg = demo-modus (alleen console).
+const SUBMIT_URL = "";
+
+const MODELS = [
+  { id: "VanMoof S6", sub: "Hoog frame", img: "img/s6-black-none.jpg" },
+  { id: "VanMoof S6 Open", sub: "Lage instap", img: "img/s6open-black-none.jpg" },
+];
+const COLORS = [
+  { id: "Drift Black", hex: "#2b2d2f" },
+  { id: "Electric Blue", hex: "#2f6fd6" },
+  { id: "Pearl mint", hex: "#bfe3d0" },
+];
+// Bagagedrager-opties met maandprijs per looptijd (gelijk voor S6 en S6 Open)
+const CARRIERS = {
+  "Nee":                                     { 36: 162.95, 48: 142.95 },
+  "Ja, achter":                              { 36: 165.95, 48: 145.95 },
+  "Ja, achter heavy duty":                   { 36: 169.95, 48: 148.95 },
+  "Ja, voor":                                { 36: 167.95, 48: 146.95 },
+  "Ja, voor met mandje":                     { 36: 169.95, 48: 148.95 },
+  "Ja, achter en voor":                      { 36: 170.95, 48: 149.95 },
+  "Ja, achter en voor met mandje":           { 36: 171.95, 48: 150.95 },
+  "Ja, achter heavy duty en voor":           { 36: 174.95, 48: 152.95 },
+  "Ja, achter heavy duty en voor met mandje":{ 36: 175.95, 48: 154.95 },
+};
+// Achter- en voordrager zijn twee losse keuzes; samen bepalen ze de optie in CARRIERS
+const REAR_OPTS = [
+  { id: "none", title: "Geen" },
+  { id: "std", title: "Standaard", sub: "Voor tassen en zitje" },
+  { id: "hd", title: "Heavy duty", sub: "Voor zware lasten" },
+];
+const FRONT_OPTS = [
+  { id: "none", title: "Geen" },
+  { id: "rack", title: "Voordrager", sub: "Open rek" },
+  { id: "basket", title: "Met mandje", sub: "Voordrager + mand" },
+];
+function carrierOf(rear, front) {
+  const r = { none: "", std: "achter", hd: "achter heavy duty" }[rear];
+  const f = { none: "", rack: "voor", basket: "voor met mandje" }[front];
+  if (!r && !f) return "Nee";
+  if (!f) return `Ja, ${r}`;
+  if (!r) return `Ja, ${f}`;
+  return `Ja, ${r} en ${f}`;
+}
+const TERMS = [36, 48];
+// Productfoto's per model / kleur / bagagedrager (img/<model>-<kleur>-<bagagedrager>.jpg)
+const CARRIER_SLUG = {
+  "Nee": "none", "Ja, achter": "rear", "Ja, achter heavy duty": "rear-hd",
+  "Ja, voor": "front", "Ja, voor met mandje": "front-basket",
+  "Ja, achter en voor": "rear-front", "Ja, achter en voor met mandje": "rear-front-basket",
+  "Ja, achter heavy duty en voor": "rear-hd-front", "Ja, achter heavy duty en voor met mandje": "rear-hd-front-basket",
+};
+const COLOR_SLUG = { "Drift Black": "black", "Electric Blue": "blue", "Pearl mint": "mint" };
+const MODEL_SLUG = { "VanMoof S6": "s6", "VanMoof S6 Open": "s6open" };
+const photoFor = (model, color, carrier) => `img/${MODEL_SLUG[model]}-${COLOR_SLUG[color]}-${CARRIER_SLUG[carrier]}.jpg`;
+
+/* ---- State ----------------------------------------------------------- */
+const params = new URLSearchParams(location.search);
+const state = {
+  model: MODELS.some(m => m.id === params.get("model")) ? params.get("model") : MODELS[0].id,
+  color: COLORS[0].id,
+  rear: "none",
+  front: "none",
+  carrier: "Nee",
+  term: 48,
+  leaseType: "Privé",
+  dealerid: params.get("dealerid") || document.documentElement.dataset.dealerid || "",
+};
+// Dealer kan accentkleur meegeven: ?accent=e30613 (hex zonder #)
+if (/^[0-9a-f]{3}([0-9a-f]{3})?$/i.test(params.get("accent") || "")) document.documentElement.style.setProperty("--green", "#" + params.get("accent"));
+
+const $ = s => document.querySelector(s);
+const eur = n => "€ " + n.toLocaleString("nl-NL", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const price = (carrier = state.carrier, term = state.term) => CARRIERS[carrier][term];
+
+function radio(container, items, isOn, onPick, render) {
+  container.innerHTML = "";
+  items.forEach(item => {
+    const el = render(item);
+    el.type = "button";
+    el.setAttribute("role", "radio");
+    el.setAttribute("aria-checked", isOn(item));
+    el.addEventListener("click", () => { onPick(item); renderAll(); });
+    container.appendChild(el);
+  });
+}
+function h(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+
+function renderAll() {
+  const model = MODELS.find(m => m.id === state.model);
+  const color = COLORS.find(c => c.id === state.color);
+  state.carrier = carrierOf(state.rear, state.front);
+
+  radio($("#models"), MODELS, m => m.id === state.model, m => state.model = m.id, m =>
+    h("button", "tile", `<img class="t-thumb" src="${m.img}" alt=""><span class="t-main"><span class="t-title">${m.id}</span><span class="t-sub">${m.sub}</span></span>`));
+
+  radio($("#colors"), COLORS, c => c.id === state.color, c => state.color = c.id, c =>
+    h("button", "tile color-tile", `<i class="dot" style="background:${c.hex}"></i><span class="t-main"><span class="t-title">${c.id}</span></span>`));
+
+  // Meerprijs t.o.v. "Geen" in dezelfde rij, met de keuze in de andere rij vast;
+  // prijzen tellen niet altijd precies op, dus steeds uitrekenen
+  const optTile = (o, diff) => h("button", "tile", `<span class="t-title">${o.title}</span>` +
+    (o.sub ? `<span class="t-sub">${o.sub}</span>` : "") +
+    (o.id === "none" ? `<span class="t-price none">Geen meerprijs</span>` : `<span class="t-price">+ ${eur(diff)} p/m</span>`));
+  radio($("#rear"), REAR_OPTS, o => o.id === state.rear, o => state.rear = o.id, o =>
+    optTile(o, price(carrierOf(o.id, state.front)) - price(carrierOf("none", state.front))));
+  radio($("#front"), FRONT_OPTS, o => o.id === state.front, o => state.front = o.id, o =>
+    optTile(o, price(carrierOf(state.rear, o.id)) - price(carrierOf(state.rear, "none"))));
+
+  radio($("#terms"), TERMS, t => t === state.term, t => state.term = t, t =>
+    h("button", "tile", `<span class="t-title">${t} maanden</span><span class="t-sub">${t === 48 ? "Laagste maandprijs" : "Kortere looptijd"}</span><span class="t-price">${eur(price(state.carrier, t))} p/m</span>`));
+
+  radio($("#leaseType"), ["Privé", "Zakelijk"], t => t === state.leaseType, t => state.leaseType = t, t => h("button", "", t));
+  $("#bizFields").hidden = state.leaseType !== "Zakelijk";
+  $("#privFields").hidden = state.leaseType === "Zakelijk";
+
+  // Hero
+  const img = $("#heroImg");
+  const photo = photoFor(model.id, state.color, state.carrier);
+  if (img.getAttribute("src") !== photo) {
+    img.classList.add("swap");
+    setTimeout(() => { img.src = photo; img.alt = model.id; img.onload = () => img.classList.remove("swap"); }, 180);
+  }
+  $("#mthumb").src = photo;
+  $("#heroModel").textContent = model.id;
+  $("#heroColor").textContent = color.id;
+  $("#heroSwatch").style.background = color.hex;
+
+  // Summary
+  const p = price();
+  const priceHtml = `${eur(p)}<span> /maand</span>`;
+  $("#price").innerHTML = priceHtml; $("#price2").innerHTML = priceHtml; $("#mprice").textContent = eur(p);
+  const rows = [["Model", state.model], ["Kleur", state.color], ["Bagagedrager", state.carrier === "Nee" ? "Geen" : state.carrier.replace(/^Ja, (.)/, (_, c) => c.toUpperCase())], ["Looptijd", state.term + " maanden"]];
+  const list = rows.map(([k, v]) => `<li><span>${k}</span><span>${v}</span></li>`).join("");
+  $("#summaryList").innerHTML = list; $("#summaryList2").innerHTML = list;
+  postHeight();
+}
+
+/* ---- Navigatie ------------------------------------------------------- */
+function go(step) {
+  ["#step1", "#step2", "#step3"].forEach((s, i) => $(s).hidden = i + 1 !== step);
+  document.querySelectorAll("#steps span").forEach(s => {
+    const n = +s.dataset.s;
+    s.className = n === step ? "on" : n < step ? "done" : "";
+  });
+  $("#steps").hidden = step === 3;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  try { window.parent !== window && window.parent.postMessage({ type: "flh-scroll-top" }, "*"); } catch (e) {}
+  postHeight();
+}
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(+b.dataset.go)));
+
+/* ---- Validatie & verzenden ------------------------------------------ */
+// IBAN mod-97 controle
+function validIban(value) {
+  const iban = value.replace(/\s+/g, "").toUpperCase();
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(iban)) return false;
+  const digits = (iban.slice(4) + iban.slice(0, 4)).replace(/[A-Z]/g, c => c.charCodeAt(0) - 55);
+  let rest = 0;
+  for (const d of digits) rest = (rest * 10 + +d) % 97;
+  return rest === 1;
+}
+function validate() {
+  let ok = true;
+  const biz = state.leaseType === "Zakelijk";
+  document.querySelectorAll("#form .field").forEach(f => {
+    const input = f.querySelector("input, textarea");
+    if (!input) return;
+    const required = input.required || (biz && input.hasAttribute("data-req-biz")) || (!biz && input.hasAttribute("data-req-priv"));
+    const hiddenField = input.closest("[hidden]");
+    let valid = true;
+    if (!hiddenField) {
+      if (required && !input.value.trim()) valid = false;
+      else if (input.value && input.pattern && !new RegExp("^(?:" + input.pattern + ")$").test(input.value)) valid = false;
+      else if (input.type === "email" && input.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) valid = false;
+      else if (input.id === "iban" && input.value && !validIban(input.value)) valid = false;
+      else if (input.id === "geboortedatum" && input.value) {
+        const d = new Date(input.value), adult = new Date(); adult.setFullYear(adult.getFullYear() - 18);
+        if (!(d <= adult) || d.getFullYear() < 1900) valid = false;
+      }
+    }
+    f.classList.toggle("invalid", !valid);
+    if (!valid && ok) { input.focus(); ok = false; }
+  });
+  const priv = $("#privacy").checked;
+  $("#privacyWrap").classList.toggle("invalid", !priv);
+  return ok && priv;
+}
+document.querySelectorAll("#form input").forEach(i => i.addEventListener("input", () => i.closest(".field")?.classList.remove("invalid")));
+
+/* ---- Adres automatisch aanvullen (PDOK Locatieserver, Kadaster) ----- */
+let addrTimer, addrSeq = 0;
+function splitHouseNumber() {
+  // "12a", "12-A" of "12 bis" in het huisnummerveld: letters naar de toevoeging verplaatsen
+  const nrEl = $("#huisnummer"), toevEl = $("#toevoeging");
+  const m = nrEl.value.trim().match(/^(\d+)\s*[-\/]?\s*([A-Za-z0-9]{1,6})$/);
+  if (m && /[A-Za-z]/.test(m[2]) || m && nrEl.value.includes("-")) {
+    nrEl.value = m[1];
+    if (!toevEl.value) toevEl.value = m[2].toUpperCase();
+  }
+}
+async function lookupAddress() {
+  splitHouseNumber();
+  const pc = $("#postcode").value.replace(/\s+/g, "").toUpperCase();
+  const nr = $("#huisnummer").value.trim();
+  const status = $("#addrStatus");
+  if (!/^\d{4}[A-Z]{2}$/.test(pc) || !/^\d+$/.test(nr)) { status.textContent = ""; status.className = "addr-status"; return; }
+  const seq = ++addrSeq;
+  status.textContent = "Adres opzoeken…"; status.className = "addr-status";
+  try {
+    const url = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?fq=type:adres&rows=1&fl=straatnaam,woonplaatsnaam"
+      + "&fq=" + encodeURIComponent("postcode:" + pc) + "&fq=" + encodeURIComponent("huisnummer:" + nr);
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 5000);
+    const res = await fetch(url, { signal: ctrl.signal }); clearTimeout(t);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const doc = (await res.json()).response.docs[0];
+    if (seq !== addrSeq) return; // er is intussen verder getypt
+    if (!doc) { status.textContent = "Geen adres gevonden bij deze postcode en dit huisnummer. Vul straat en plaats zelf in."; return; }
+    for (const [id, val] of [["straat", doc.straatnaam], ["plaats", doc.woonplaatsnaam]]) {
+      const el = $("#" + id);
+      el.value = val; el.closest(".field").classList.remove("invalid");
+      el.classList.add("filled"); setTimeout(() => el.classList.remove("filled"), 1200);
+    }
+    status.textContent = `✓ ${doc.straatnaam} ${nr}${$("#toevoeging").value ? " " + $("#toevoeging").value : ""}, ${doc.woonplaatsnaam}`; status.className = "addr-status ok";
+  } catch (e) {
+    if (seq === addrSeq) status.textContent = "Het adres kon niet automatisch worden opgezocht. Vul straat en plaats zelf in.";
+  }
+}
+["postcode", "huisnummer"].forEach(id => {
+  $("#" + id).addEventListener("input", () => { clearTimeout(addrTimer); addrTimer = setTimeout(lookupAddress, 400); });
+  $("#" + id).addEventListener("change", lookupAddress); // ook bij automatisch invullen door de browser
+});
+$("#postcode").addEventListener("blur", () => {
+  const v = $("#postcode").value.replace(/\s+/g, "").toUpperCase();
+  if (/^\d{4}[A-Z]{2}$/.test(v)) $("#postcode").value = v.slice(0, 4) + " " + v.slice(4);
+});
+
+$("#form").addEventListener("submit", async e => {
+  e.preventDefault();
+  $("#formError").style.display = "none";
+  if (!validate()) { postHeight(); return; }
+  const v = id => $("#" + id).value.trim();
+  const biz = state.leaseType === "Zakelijk";
+  // Veldnamen gelijk aan het oude Tally-formulier, zodat bestaande verwerking blijft werken
+  const payload = {
+    dealerid: state.dealerid,
+    "Model": state.model,
+    "Welke kleur wil je?": state.color,
+    "Wil je een bagagedrager": state.carrier,
+    "Gewenste looptijd": state.term + " maanden",
+    "Leaseprijs": price(),
+    "Wil je zakelijk of privé leasen?": state.leaseType,
+    "Bedrijfsnaam": biz ? v("bedrijfsnaam") : "",
+    "Kvk-nummer": biz ? v("kvk") : "",
+    "BTW-nummer": biz ? v("btw").replace(/\s+/g, "").toUpperCase() : "",
+    "IBAN": biz ? v("iban").replace(/\s+/g, "").toUpperCase() : "",
+    "Naam tekeningsbevoegd persoon": biz ? v("tekenbevoegd") : "",
+    "Voorletters": v("voorletters"),
+    "Achternaam": v("achternaam"),
+    "E-mailadres": v("email"),
+    "Telefoonnummer": v("telefoon"),
+    "Straatnaam": v("straat"),
+    "Huisnummer": v("huisnummer"),
+    "Huisnummer toevoeging": v("toevoeging"),
+    "Postcode": v("postcode").toUpperCase().replace(/\s+/g, "").replace(/^(\d{4})/, "$1 "),
+    "Plaats": v("plaats"),
+    "Wat is jouw geboortedatum:": biz ? "" : v("geboortedatum"),
+    "Opmerkingen bij jouw aanvraag": v("opmerkingen"),
+    "Privacyverklaring akkoord": true,
+    submittedAt: new Date().toISOString(),
+    source: location.href,
+  };
+  const btn = $("#submitBtn");
+  btn.disabled = true; btn.textContent = "Bezig met versturen…";
+  try {
+    if (SUBMIT_URL) {
+      const res = await fetch(SUBMIT_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+    } else {
+      console.log("[demo] aanvraag:", payload);
+    }
+    $("#doneModel").textContent = `${state.model} in ${state.color}`;
+    $("#doneName").textContent = payload["Voorletters"] && payload["Achternaam"] ? ` ${payload["Voorletters"]} ${payload["Achternaam"]}` : "";
+    $("#doneEmail").textContent = payload["E-mailadres"];
+    $("#donePhoto").src = photoFor(state.model, state.color, state.carrier);
+    $("#donePhoto").alt = state.model;
+    $("#price3").innerHTML = $("#price2").innerHTML;
+    $("#summaryList3").innerHTML = $("#summaryList2").innerHTML + `<li><span>Type lease</span><span>${state.leaseType}</span></li>`;
+    go(3);
+  } catch (err) {
+    console.error(err);
+    $("#formError").style.display = "block";
+  } finally {
+    btn.disabled = false; btn.textContent = "Aanvraag versturen";
+  }
+});
+
+/* ---- Iframe auto-hoogte --------------------------------------------- */
+function postHeight() {
+  if (window.parent === window) return;
+  requestAnimationFrame(() => window.parent.postMessage({ type: "flh-height", height: document.querySelector(".wrap").offsetHeight }, "*"));
+}
+if (window.parent !== window) document.documentElement.classList.add("embedded");
+new ResizeObserver(postHeight).observe(document.querySelector(".wrap"));
+
+/* ---- Onderbalk met mini-foto ------------------------------------------ */
+// Zelfstandig: de balk plakt via CSS onderin; de mini-foto verschijnt als de grote foto uit beeld is.
+// In een iframe stuurt de embedcode {type:"flh-viewport", top, vh}: waar het iframe staat t.o.v. het
+// scherm van de dealerpagina. Daarmee zetten we de balk zelf onderin het zichtbare deel.
+let viewport = null;
+function placeBar() {
+  const bar = $(".mbar"), hero = $(".hero").getBoundingClientRect();
+  const visTop = viewport ? Math.max(0, -viewport.top) : 0;
+  const visBottom = viewport ? viewport.vh - viewport.top : window.innerHeight;
+  bar.classList.toggle("show-thumb", hero.bottom < visTop + 60 || hero.top > visBottom);
+  if (!viewport) return;
+  const wrap = $(".wrap").getBoundingClientRect(), step = $("#step1").getBoundingClientRect();
+  const top = Math.min(visBottom, step.bottom) - bar.offsetHeight;
+  bar.style.top = (top - wrap.top) + "px";
+  bar.style.visibility = $("#step1").hidden || visBottom - visTop < 120 || top < step.top ? "hidden" : "visible";
+}
+window.addEventListener("message", e => {
+  if (e.source !== window.parent || !e.data || e.data.type !== "flh-viewport") return;
+  viewport = e.data;
+  document.documentElement.classList.add("vp");
+  placeBar();
+});
+window.addEventListener("scroll", placeBar, { passive: true });
+window.addEventListener("resize", placeBar);
+function updateScrollMode() {
+  document.documentElement.classList.toggle("selfscroll", document.documentElement.scrollHeight > window.innerHeight + 2);
+}
+window.addEventListener("resize", updateScrollMode);
+new ResizeObserver(updateScrollMode).observe(document.body);
+window.addEventListener("load", () => { updateScrollMode(); placeBar(); });
+document.addEventListener("click", () => requestAnimationFrame(placeBar));
+
+renderAll();
+// Foto's van het gekozen model en de gekozen kleur alvast laden, zodat wisselen direct gaat
+const preloaded = new Set();
+function preload() {
+  for (const carrier in CARRIER_SLUG) {
+    const src = photoFor(state.model, state.color, carrier);
+    if (!preloaded.has(src)) { preloaded.add(src); new Image().src = src; }
+  }
+}
+window.addEventListener("load", preload);
+document.addEventListener("click", () => setTimeout(preload, 300));
+</script>
+</body>
+</html>
