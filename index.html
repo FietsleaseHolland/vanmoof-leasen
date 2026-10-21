@@ -193,6 +193,20 @@
     /* Mini-foto verschijnt zodra de grote foto uit beeld is */
     .mbar .thumb { width: 0; height: 44px; object-fit: contain; mix-blend-mode: multiply; opacity: 0; margin-right: -14px; transition: width .2s ease, opacity .2s ease, margin .2s ease; }
     .mbar.show-thumb .thumb { width: 92px; height: 52px; opacity: 1; margin-right: 0; }
+    .mbar .p { flex: none; }
+    .mbar .btn { min-width: 0; white-space: nowrap; }
+  }
+  /* Smalle schermen (of een smal iframe): balk compacter zodat alles naast elkaar past */
+  @media (max-width: 360px) {
+    .mbar { gap: 10px; padding-left: 12px; padding-right: 12px; }
+    .mbar.show-thumb .thumb { width: 60px; height: 40px; }
+    .mbar .p { font-size: 18px; }
+    .mbar .btn { padding: 12px 10px; font-size: 15px; }
+  }
+  @media (max-width: 300px) {
+    .mbar.show-thumb .thumb { width: 0; opacity: 0; margin-right: -10px; }
+  }
+  @media (max-width: 860px) {
     /* In een iframe scrollt de dealerpagina: de balk wordt dan via berichten van die pagina geplaatst */
     .embedded.vp .wrap { position: relative; }
     .embedded.vp .mbar { display: flex; position: absolute; left: 0; right: 0; margin: 0; bottom: auto; box-shadow: 0 -4px 12px rgba(0,0,0,.06); }
