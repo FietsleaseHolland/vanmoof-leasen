@@ -162,6 +162,7 @@
   .form-error { color: var(--error); font-size: 14px; margin-top: 10px; display: none; }
 
   [hidden] { display: none !important; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .step { animation: in .3s ease; }
   @keyframes in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
@@ -352,6 +353,7 @@
 
         <div class="note">Het indienen van een aanvraag is vrijblijvend, je zit nog nergens aan vast. Fietslease Holland neemt je aanvraag in behandeling; bij acceptatie ontvang je van ons de definitieve leaseovereenkomst om te ondertekenen.</div>
 
+        <div class="hp" aria-hidden="true"><label for="website">Laat dit veld leeg</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
         <label class="check" id="privacyWrap"><input type="checkbox" id="privacy" name="privacy"> <span>Ik ga akkoord met de <a href="https://www.fietsleaseholland.nl/privacyverklaring" target="_blank" rel="noopener">privacyverklaring</a> van Fietslease Holland</span></label>
 
         <div style="margin-top:18px"><button class="btn" type="submit" id="submitBtn">Aanvraag versturen</button></div>
@@ -404,8 +406,9 @@
 
 <script>
 /* ---- Configuratie ---------------------------------------------------- */
-// Endpoint dat de aanvraag ontvangt (JSON POST). Leeg = demo-modus (alleen console).
-const SUBMIT_URL = "";
+// Endpoint dat de aanvraag ontvangt (JSON POST): api/aanvraag.js zet hem door naar de webhook.
+// Lokaal (localhost) draait die niet: dan demo-modus, de aanvraag komt alleen in de console.
+const SUBMIT_URL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? "" : "/api/aanvraag";
 
 const MODELS = [
   { id: "VanMoof S6", sub: "Hoog frame", img: "img/s6-black-none.jpg" },
@@ -686,6 +689,7 @@ $("#form").addEventListener("submit", async e => {
     "Wat is jouw geboortedatum:": biz ? "" : v("geboortedatum"),
     "Opmerkingen bij jouw aanvraag": v("opmerkingen"),
     "Privacyverklaring akkoord": true,
+    website: $("#website").value, // honeypot tegen spambots
     submittedAt: new Date().toISOString(),
     source: location.href,
   };
