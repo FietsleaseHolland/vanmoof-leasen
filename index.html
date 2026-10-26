@@ -117,6 +117,7 @@
   .summary { position: sticky; top: 16px; border: 1.5px solid var(--line); border-radius: 20px; padding: 20px; background: #fff; }
   .summary .price { font-size: 40px; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin: 6px 0 2px; }
   .summary .price span { font-size: 15px; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+  .summary .vat { font-size: 12px; color: var(--muted); margin-top: 4px; }
   .summary .label { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
   .summary ul { list-style: none; padding: 0; margin: 16px 0; border-top: 1px solid var(--line); }
   .summary li { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
@@ -274,11 +275,13 @@
       <aside class="summary on-config">
         <div class="label">Jouw leaseprijs</div>
         <div class="price" id="price">€ 0<span> /maand</span></div>
+        <div class="vat">Inclusief btw</div>
         <ul id="summaryList"></ul>
         <button class="btn cfg-next" type="button" data-go="2">Leaseaanvraag starten
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
         <ul class="usps">
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--green)"><path d="M5 12l5 5L20 7"/></svg>Contract rond binnen 48 uur</li>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--green)"><path d="M5 12l5 5L20 7"/></svg>Verzekerd tegen diefstal en schade</li>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--green)"><path d="M5 12l5 5L20 7"/></svg>Onderhoud en reparaties inbegrepen</li>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color:var(--green)"><path d="M5 12l5 5L20 7"/></svg>24/7 pechhulp in heel Europa</li>
@@ -290,7 +293,7 @@
 
     <div class="mbar">
       <img class="thumb" id="mthumb" alt="" src="img/s6-black-none.jpg">
-      <div class="p"><small>per maand</small><span id="mprice">€ 0</span></div>
+      <div class="p"><small>p/m incl. btw</small><span id="mprice">€ 0</span></div>
       <button class="btn" type="button" data-go="2">Aanvragen</button>
     </div>
   </section>
@@ -362,6 +365,7 @@
       <aside class="summary">
         <div class="label">Jouw VanMoof</div>
         <div class="price" id="price2">€ 0<span> /maand</span></div>
+        <div class="vat">Inclusief btw</div>
         <ul id="summaryList2"></ul>
         <button class="btn btn-ghost" type="button" data-go="1" style="padding:0">Wijzigen</button>
         <div class="partner"><img class="flh-logo" src="img/logo-fietslease-holland.png" alt="Fietslease Holland" width="332" height="120"><span>Je lease wordt verzorgd door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a>: van contract en verzekering tot onderhoud en pechhulp.</span></div>
@@ -382,7 +386,7 @@
         <h2 class="done-title">Wat gebeurt er nu?</h2>
         <ol class="timeline">
           <li class="is-done"><b>Aanvraag ontvangen</b><span>Zojuist verstuurd. Je zit nog nergens aan vast.</span></li>
-          <li><b>Beoordeling door Fietslease Holland</b><span>We bekijken je aanvraag en nemen contact met je op als we nog iets nodig hebben.</span></li>
+          <li><b>Beoordeling door Fietslease Holland</b><span>We bekijken je aanvraag en nemen contact met je op als we nog iets nodig hebben. Je contract is binnen 48 uur rond.</span></li>
           <li><b>Leaseovereenkomst ondertekenen</b><span>Bij akkoord ontvang je de definitieve leaseovereenkomst om digitaal te ondertekenen.</span></li>
           <li><b>Je VanMoof ophalen</b><span>Deze winkel maakt je fiets rijklaar en levert hem aan je uit.</span></li>
         </ol>
@@ -394,6 +398,7 @@
         <div class="done-photo"><img id="donePhoto" alt=""></div>
         <div class="label">Jouw aanvraag</div>
         <div class="price" id="price3">€ 0<span> /maand</span></div>
+        <div class="vat">Inclusief btw</div>
         <ul id="summaryList3"></ul>
         <div class="partner"><img class="flh-logo" src="img/logo-fietslease-holland.png" alt="Fietslease Holland" width="332" height="120"><span>Je lease wordt verzorgd door <a href="https://www.fietsleaseholland.nl/" target="_blank" rel="noopener">Fietslease Holland</a>: van contract en verzekering tot onderhoud en pechhulp.</span></div>
       </aside>
