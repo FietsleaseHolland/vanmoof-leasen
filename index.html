@@ -117,6 +117,7 @@
   .summary { position: sticky; top: 16px; border: 1.5px solid var(--line); border-radius: 20px; padding: 20px; background: #fff; }
   .summary .price { font-size: 40px; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin: 6px 0 2px; }
   .summary .price span { font-size: 15px; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+  @media (max-width: 360px) { .summary .price { font-size: 32px; } .summary .price span { font-size: 13px; } }
   .summary .vat { font-size: 12px; color: var(--muted); margin-top: 4px; }
   .summary .label { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
   .summary ul { list-style: none; padding: 0; margin: 16px 0; border-top: 1px solid var(--line); }
@@ -189,7 +190,7 @@
   .mbar { display: none; }
   @media (max-width: 860px) {
     .summary.on-config { position: static; }
-    .mbar { display: flex; position: sticky; bottom: 0; margin: 20px -16px -40px; padding: 12px 16px; background: #fff; border-top: 1px solid var(--line); align-items: center; gap: 14px; z-index: 5; }
+    .mbar { display: flex; position: sticky; bottom: 0; margin: 20px -16px 0; padding: 12px 16px; background: #fff; border-top: 1px solid var(--line); align-items: center; gap: 14px; z-index: 5; }
     .mbar .p { font-weight: 800; font-size: 20px; white-space: nowrap; }
     .mbar .p small { font-size: 12px; color: var(--muted); font-weight: 600; display: block; line-height: 1; }
     .mbar .btn { flex: 1; padding: 13px; }

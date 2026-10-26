@@ -6,11 +6,10 @@
 <title>Demo dealersite</title>
 <style>
   body { margin: 0; font-family: Georgia, serif; background: #faf7f2; color: #222; }
-  header { background: #7a1f1f; color: #fff; padding: 18px 24px; font-size: 22px; font-weight: bold; }
+  header { background: #7a1f1f; color: #fff; padding: 18px 24px; font-size: 22px; font-weight: bold; position: sticky; top: 0; z-index: 10; }
   nav { background: #5c1616; padding: 8px 24px; font-size: 14px; color: #f3d9d9; }
   main { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
   .embed-box { background: #fff; border-radius: 6px; padding: 8px; }
-  pre { background: #222; color: #eee; padding: 14px; border-radius: 6px; overflow: auto; font-size: 12px; }
 </style>
 </head>
 <body>
@@ -18,31 +17,12 @@
 <nav>Home · Fietsen · Werkplaats · <b>VanMoof leasen</b> · Contact</nav>
 <main>
   <h2>VanMoof leasen</h2>
-  <p>Simulatie van een dealerwebsite met het formulier ingebed (dealer-ID FLHDE0393).</p>
+  <p>Simulatie van een dealerwebsite met het formulier ingebed (dealer-ID FLHDE0393), met een vaste menubalk bovenin.</p>
 
   <div class="embed-box">
     <!-- ===== Begin embedcode Fietslease Holland ===== -->
-    <iframe id="flh-vanmoof" src="/?dealerid=FLHDE0393"
-            style="width:100%;border:0;min-height:900px;display:block" title="VanMoof leasen via Fietslease Holland" loading="lazy"></iframe>
-    <script>
-      (function () {
-        var f = document.getElementById("flh-vanmoof"), queued = false;
-        function viewport() {
-          queued = false;
-          var r = f.getBoundingClientRect();
-          f.contentWindow && f.contentWindow.postMessage({ type: "flh-viewport", top: r.top, vh: window.innerHeight }, "*");
-        }
-        function queue() { if (!queued) { queued = true; requestAnimationFrame(viewport); } }
-        window.addEventListener("message", function (e) {
-          if (e.source !== f.contentWindow || !e.data) return;
-          if (e.data.type === "flh-height") { f.style.minHeight = "0"; f.style.height = e.data.height + "px"; queue(); }
-          if (e.data.type === "flh-scroll-top") f.scrollIntoView({ behavior: "smooth" });
-        });
-        window.addEventListener("scroll", queue, { passive: true });
-        window.addEventListener("resize", queue);
-        f.addEventListener("load", queue);
-      })();
-    </script>
+    <div data-flh-vanmoof data-dealer="FLHDE0393" data-offset="64"></div>
+    <script src="/embed.js" async></script>
     <!-- ===== Einde embedcode ===== -->
   </div>
 </main>
